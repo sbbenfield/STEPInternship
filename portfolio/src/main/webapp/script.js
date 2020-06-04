@@ -13,16 +13,16 @@
 // limitations under the License.
 
 function getGreeting() {
-  const responsePromise = fetch('/data');
-  responsePromise.then(handleResponse);
+  fetch('/data').then(response => response.json()).then((greeting) => {
+    const greetingElement = document.getElementById('greeting-container');
+    greetingElement.innerHTML = '';
+    greetingElement.appendChild(
+        createListElement(greeting));
+  });
 }
 
-function handleResponse(response) {
-  const textPromise = response.text();
-  textPromise.then(addGreetingToDom);
-}
-
-function addGreetingToDom(greeting) {
-  const greetingContainer = document.getElementById('greeting-container');
-  greetingContainer.innerHTML = greeting;
+function createListElement(text) {
+  const liElement = document.createElement('li');
+  liElement.innerText = text;
+  return liElement;
 }
