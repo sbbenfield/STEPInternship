@@ -19,11 +19,13 @@
       <h3><center>Links</center></h3>
       <p><center>https://github.com/sbbenfield</center></p>
       <p><center>www.linkedin.com/in/silas-benfield</center></p>
-      <div id="content">
-        <h3>Get Greeting</h1>
-        <p>Click here to see the greeting:</p>
-        <button onclick="getGreeting()">Fetch a greeting!</button>
-        <div id="greeting-container"></div>
+      <div id="comments">
+        <form action="/data" method="POST">
+          <p>Comments:</p>
+          <input type="text" name="text-input" min="1" max="200" value="">
+          <br/><br/>
+          <input type="submit" />
+        </form>
       </div>
     </div>
   </body>
