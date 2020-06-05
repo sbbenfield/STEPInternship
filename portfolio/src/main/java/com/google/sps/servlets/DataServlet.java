@@ -20,28 +20,25 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
+import java.util.Arrays;
 
 /** Servlet that returns some example content. TODO: modify this file to handle comments data */
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
   
-  private ArrayList<String> createList() {
-      ArrayList<String> greetings = new ArrayList<>();
-      greetings.add("Hello!");
-      greetings.add("How are you?");
-      greetings.add("Goodbye!");
-      return greetings;
-  }
-
   @Override
-  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    String text = getParameter(request, "text-input", "");
+    String[] comments = text.split("\\s*,\\s*");
     response.setContentType("text/html;");
-    response.getWriter().println(convertToJsonUsingGson(createList()));
+    response.getWriter().println(Arrays.toString(comments));
   }
 
-  private String convertToJsonUsingGson(ArrayList<String> greetings) {
-    Gson gson = new Gson();
-    return gson.toJson(greetings);
+  private String getParameter(HttpServletRequest request, String name, String defaultValue) {
+    String value = request.getParameter(name);
+    if (value == null) {
+      return defaultValue;
+    }
+    return value;
   }
 }
