@@ -49,12 +49,8 @@ public class DataServlet extends HttpServlet {
 
     List<Task> tasks = new ArrayList<>();
     for (Entity entity : results.asIterable()) {
-        long id = entity.getKey().getId();
-        String comment = (String) entity.getProperty("comment");
-        long timestamp = (long) entity.getProperty("timestamp");
-
-        Task task = new Task(id, comment, timestamp);
-        tasks.add(task);
+        tasks.add(new Task(entity.getKey().getId(), (String) entity.getProperty("comment"), 
+                           (long) entity.getProperty("timestamp")));
     }
 
     Gson gson = new Gson();
