@@ -14,8 +14,17 @@
 
 package com.google.sps.servlets;
 
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.gson.Gson;
+import com.google.sps.Task;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -28,10 +37,30 @@ public class DataServlet extends HttpServlet {
   
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    String text = getParameter(request, "text-input", "");
-    String[] comments = text.split("\\s*,\\s*");
-    response.setContentType("text/html;");
-    response.getWriter().println(Arrays.toString(comments));
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+
+    Entity taskEntity = new Entity("Task");
+    taskEntity.setProperty("comment", getParameter(request, "text-input", ""));
+    taskEntity.setProperty("timestamp", System.currentTimeMillis());
+    datastore.put(taskEntity);
+    
+    Query query = new Query("Task").addSort("comment", SortDirection.DESCENDING);
+    PreparedQuery results = datastore.prepare(query);
+
+    List<Task> tasks = new ArrayList<>();
+    for (Entity entity : results.asIterable()) {
+        long id = entity.getKey().getId();
+        String comment = (String) entity.getProperty("comment");
+        long timestamp = (long) entity.getProperty("timestamp");
+
+        Task task = new Task(id, comment, timestamp);
+        tasks.add(task);
+    }
+
+    Gson gson = new Gson();
+
+    response.setContentType("application/json;");
+    response.getWriter().println(gson.toJson(tasks));
   }
 
   private String getParameter(HttpServletRequest request, String name, String defaultValue) {
