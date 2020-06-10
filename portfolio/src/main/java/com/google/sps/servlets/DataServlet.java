@@ -44,14 +44,12 @@ public class DataServlet extends HttpServlet {
     UserService userService = UserServiceFactory.getUserService();
     if (userService.isUserLoggedIn()) {
       String userEmail = userService.getCurrentUser().getEmail();
-      String redirectUrl = "/data";
-      String logoutUrl = userService.createLogoutURL(redirectUrl);
+      String logoutUrl = userService.createLogoutURL("/data");
 
       response.getWriter().println("<p>Hello " + userEmail + "!</p>");
       response.getWriter().println("<p>Logout <a href=\"" + logoutUrl + "\">here</a>.</p>");
     } else {
-      String redirectUrl = "/data";
-      String loginUrl = userService.createLoginURL(redirectUrl);
+      String loginUrl = userService.createLoginURL("/data");
 
       response.getWriter().println("<p>Hello!</p>");
       response.getWriter().println("<p>Login <a href=\"" + loginUrl + "\">here</a>.</p>");
