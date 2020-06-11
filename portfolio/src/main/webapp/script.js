@@ -12,17 +12,26 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-function getGreeting() {
-  fetch('/data').then(response => response.json()).then((greeting) => {
-    const greetingElement = document.getElementById('greeting-container');
-    greetingElement.innerHTML = '';
-    greetingElement.appendChild(
-        createListElement(greeting));
-  });
-}
+google.charts.load('current', {'packages':['corechart']});
+google.charts.setOnLoadCallback(drawChart);
 
-function createListElement(text) {
-  const liElement = document.createElement('li');
-  liElement.innerText = text;
-  return liElement;
+function drawChart() {
+  const data = new google.visualization.DataTable();
+  data.addColumn('string', 'Animal');
+  data.addColumn('number', 'Count');
+        data.addRows([
+          ['Lions', 10],
+          ['Tigers', 5],
+          ['Bears', 15]
+        ]);
+
+  const options = {
+    'title': 'Zoo Animals',
+    'width':500,
+    'height':400
+  };
+
+  const chart = new google.visualization.PieChart(
+      document.getElementById('chart-container'));
+  chart.draw(data, options);
 }
