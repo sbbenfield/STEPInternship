@@ -1,6 +1,7 @@
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import java.io.IOException;
+import java.lang.UnsupportedOperationException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -11,7 +12,8 @@ public class LoginServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-      doPost(request, response);
+      // Not implemented yet
+      throw new UnsupportedOperationException("doGet is not implemented yet");
   }
   
   @Override
