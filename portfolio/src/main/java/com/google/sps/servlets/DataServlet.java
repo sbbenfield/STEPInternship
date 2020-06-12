@@ -42,6 +42,10 @@ public class DataServlet extends HttpServlet {
       doPost(request, response);
   }
   
+  /**
+  * The doPost method creates a Datastore object that stores an Entity with set properties for commenting.
+  * A list of tasks are then created to house all entities, to be converted to Json and displayed on /data. 
+  */
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     UserService userService = UserServiceFactory.getUserService();
@@ -65,7 +69,13 @@ public class DataServlet extends HttpServlet {
     response.setContentType("application/json;");
     response.getWriter().println(gson.toJson(tasks));
   }
-
+  
+  /**
+  * The getParameter method retrieves the values from the submitted form 
+  * The request contains parameters with names that match the names of the input elements in the HTML form.  
+  * 
+  * @return String value that represents the input element's name from the request.
+  */
   private String getParameter(HttpServletRequest request, String name, String defaultValue) {
     String value = request.getParameter(name);
     return value == null ? defaultValue : value;
