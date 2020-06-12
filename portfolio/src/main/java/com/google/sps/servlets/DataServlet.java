@@ -25,6 +25,7 @@ import com.google.appengine.api.users.UserServiceFactory;
 import com.google.gson.Gson;
 import com.google.sps.Task;
 import java.io.IOException;
+import java.lang.UnsupportedOperationException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.annotation.WebServlet;
@@ -39,7 +40,8 @@ public class DataServlet extends HttpServlet {
   
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-      doPost(request, response);
+      // Not implemented yet
+      throw new UnsupportedOperationException("doGet is not implemented yet");
   }
   
   /**
