@@ -64,7 +64,6 @@ public class DataServlet extends HttpServlet {
     Gson gson = new Gson();
     response.setContentType("application/json;");
     response.getWriter().println(gson.toJson(tasks));
-    //response.sendRedirect("/login");
   }
 
   private String getParameter(HttpServletRequest request, String name, String defaultValue) {
