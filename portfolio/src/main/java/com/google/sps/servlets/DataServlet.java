@@ -39,27 +39,12 @@ public class DataServlet extends HttpServlet {
   
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    response.setContentType("text/html");
-
-    UserService userService = UserServiceFactory.getUserService();
-    if (userService.isUserLoggedIn()) {
-      String userEmail = userService.getCurrentUser().getEmail();
-      String logoutUrl = userService.createLogoutURL("/data");
-
-      response.getWriter().println("<p>Hello " + userEmail + "!</p>");
-      response.getWriter().println("<p>Logout <a href=\"" + logoutUrl + "\">here</a>.</p>");
-    } else {
-      String loginUrl = userService.createLoginURL("/data");
-
-      response.getWriter().println("<p>Hello!</p>");
-      response.getWriter().println("<p>Login <a href=\"" + loginUrl + "\">here</a>.</p>");
-    }
+      doPost(request, response);
   }
   
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     UserService userService = UserServiceFactory.getUserService();
-    if (!userService.isUserLoggedIn()) doGet(request,response);
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     Entity taskEntity = new Entity("Task");
@@ -79,7 +64,7 @@ public class DataServlet extends HttpServlet {
     Gson gson = new Gson();
     response.setContentType("application/json;");
     response.getWriter().println(gson.toJson(tasks));
-    response.sendRedirect("/login");
+    //response.sendRedirect("/login");
   }
 
   private String getParameter(HttpServletRequest request, String name, String defaultValue) {
