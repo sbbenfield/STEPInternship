@@ -25,6 +25,7 @@ import com.google.appengine.api.users.UserServiceFactory;
 import com.google.gson.Gson;
 import com.google.sps.Task;
 import java.io.IOException;
+import java.lang.UnsupportedOperationException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.annotation.WebServlet;
@@ -39,27 +40,17 @@ public class DataServlet extends HttpServlet {
   
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    response.setContentType("text/html");
-
-    UserService userService = UserServiceFactory.getUserService();
-    if (userService.isUserLoggedIn()) {
-      String userEmail = userService.getCurrentUser().getEmail();
-      String logoutUrl = userService.createLogoutURL("/data");
-
-      response.getWriter().println("<p>Hello " + userEmail + "!</p>");
-      response.getWriter().println("<p>Logout <a href=\"" + logoutUrl + "\">here</a>.</p>");
-    } else {
-      String loginUrl = userService.createLoginURL("/data");
-
-      response.getWriter().println("<p>Hello!</p>");
-      response.getWriter().println("<p>Login <a href=\"" + loginUrl + "\">here</a>.</p>");
-    }
+      // Not implemented yet
+      throw new UnsupportedOperationException("doGet is not implemented yet");
   }
   
+  /**
+  * This method creates a Datastore object that stores an Entity with set properties for commenting.
+  * A list of tasks are then created to house all entities, to be converted to Json and displayed on /data. 
+  */
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     UserService userService = UserServiceFactory.getUserService();
-    if (!userService.isUserLoggedIn()) doGet(request,response);
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     Entity taskEntity = new Entity("Task");
@@ -79,9 +70,14 @@ public class DataServlet extends HttpServlet {
     Gson gson = new Gson();
     response.setContentType("application/json;");
     response.getWriter().println(gson.toJson(tasks));
-    response.sendRedirect("/login");
   }
-
+  
+  /**
+  * This method retrieves the values from the submitted form 
+  * The request contains parameters with names that match the names of the input elements in the HTML form.  
+  * 
+  * @return String value that represents the input element's name from the request.
+  */
   private String getParameter(HttpServletRequest request, String name, String defaultValue) {
     String value = request.getParameter(name);
     return value == null ? defaultValue : value;
