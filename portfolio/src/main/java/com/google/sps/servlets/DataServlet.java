@@ -45,7 +45,7 @@ public class DataServlet extends HttpServlet {
   }
   
   /**
-  * The doPost method creates a Datastore object that stores an Entity with set properties for commenting.
+  * This method creates a Datastore object that stores an Entity with set properties for commenting.
   * A list of tasks are then created to house all entities, to be converted to Json and displayed on /data. 
   */
   @Override
@@ -73,7 +73,7 @@ public class DataServlet extends HttpServlet {
   }
   
   /**
-  * The getParameter method retrieves the values from the submitted form 
+  * This method retrieves the values from the submitted form 
   * The request contains parameters with names that match the names of the input elements in the HTML form.  
   * 
   * @return String value that represents the input element's name from the request.
