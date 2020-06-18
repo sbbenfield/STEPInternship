@@ -88,6 +88,7 @@ public final class FindMeetingQuery {
         for (String requestAttendee : request.getAttendees()) {
             if (eventAttendees.contains(requestAttendee) {
                 allAttendeeRanges.add(event.getWhen());
+                break;
             }
         }
     }
