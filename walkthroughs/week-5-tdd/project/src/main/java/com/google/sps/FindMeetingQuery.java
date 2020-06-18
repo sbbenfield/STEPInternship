@@ -75,11 +75,11 @@ public final class FindMeetingQuery {
 
   /**
    * Method that iterates through events and checks if attendees of each event matches the request's attendees, 
-   * if so adds their TimeRange to a Set to be sorted.
+   * if so adds their TimeRange to a List to be sorted.
    * @return Sorted List of TimeRanges based on attendees in ascending order.
    */
   public static List<TimeRange> getAllAttendeeRanges(Collection<Event> events, MeetingRequest request) {
-    Set<TimeRange> allAttendeeRanges = new HashSet<>();
+    List<TimeRange> allAttendeeRanges = new ArrayList<>();
 
     //Iterates through events to retrieve all event attendees and 
     //reference them with meeting request's attendees inorder to retrieve their TimeRanges.
@@ -92,9 +92,8 @@ public final class FindMeetingQuery {
             }
         }
     }
-    //Convert Set to ArrayList using Stream and sorts it using Collections.sort by ascending time.
-    List<TimeRange> sortedTimeRanges = allAttendeeRanges.stream().collect(Collectors.toList()); 
-    Collections.sort(sortedTimeRanges, TimeRange.ORDER_BY_START); 
-    return sortedTimeRanges;
+    //Sorts List of TimeRanges using Collections.sort by ascending time.
+    Collections.sort(allAttendeeRanges, TimeRange.ORDER_BY_START); 
+    return allAttendeeRanges;
   }
 }
