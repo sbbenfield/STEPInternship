@@ -86,10 +86,8 @@ public final class FindMeetingQuery {
     for (Event event : events) {
         Set<String> eventAttendees = event.getAttendees();
         for (String requestAttendee : request.getAttendees()) {
-            for (String eventAttendee : eventAttendees) {
-                if (requestAttendee.equals(eventAttendee)) {
-                    allAttendeeRanges.add(event.getWhen());
-                }
+            if (eventAttendees.contains(requestAttendee) {
+                allAttendeeRanges.add(event.getWhen());
             }
         }
     }
