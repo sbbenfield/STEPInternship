@@ -40,7 +40,15 @@ public final class FindMeetingQuery {
     ArrayList<TimeRange> availableTimeRangesForRequest = new ArrayList<>();
 
     //Returns an empty List should the requested duration be longer than a total day.
-    if (request.getDuration() > TimeRange.WHOLE_DAY.duration()) return availableTimeRangesForRequest;
+    if (request.getDuration() > TimeRange.WHOLE_DAY.duration()) {
+      return availableTimeRangesForRequest;
+    }
+    
+    //If there are no events planned, create a TimeRange of the entire day available for the meeting request.
+    if (sortedEventTimeRanges.isEmpty()) {
+      availableTimeRangesForRequest.add(TimeRange.fromStartDuration(dayStart, dayEnd + 1));
+      return availableTimeRangesForRequest;
+    }
 
     //For-each that iterates through sortedTimeRanges to determine available times for request's duration.
     for (TimeRange timeRange : sortedEventTimeRanges) {
@@ -66,10 +74,6 @@ public final class FindMeetingQuery {
         }
         previousEventTimeRange = timeRange;
     }
-    
-    //If there are no events planned, create a TimeRange of the entire day available for the meeting request.
-    if (sortedEventTimeRanges.isEmpty()) availableTimeRangesForRequest
-      .add(TimeRange.fromStartDuration(dayStart, dayEnd + 1));
     return availableTimeRangesForRequest;
   }
 
