@@ -24,51 +24,53 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream; 
 
 public final class FindMeetingQuery {
+  /**
+   * Method for retrieving all possible times for the request based on all attendee's
+   * events and availabilty.
+   * @return Collection of TimeRanges that show when the requested meeting can occur.
+   */
   public Collection<TimeRange> query(Collection<Event> events, MeetingRequest request) {
-
     int dayStart = TimeRange.START_OF_DAY;
     int dayEnd = TimeRange.END_OF_DAY;
-    int start = dayStart;
-    int end;
-    TimeRange previousTime = TimeRange.fromStartDuration(0,0);
+    int startEvent = dayStart;
+    int endEvent;
     
-    List<TimeRange> sortedTimeRanges = getAllAttendeeRanges(events, request);
-    ArrayList<TimeRange> possibleTimeRanges = new ArrayList<>();
+    TimeRange previousEventTimeRange = TimeRange.fromStartDuration(0,0);  
+    List<TimeRange> sortedEventTimeRanges = getAllAttendeeRanges(events, request);
+    ArrayList<TimeRange> availableTimeRangesForRequest = new ArrayList<>();
 
     //Returns an empty List should the requested duration be longer than a total day.
-    if (request.getDuration() > TimeRange.WHOLE_DAY.duration()) return possibleTimeRanges;
+    if (request.getDuration() > TimeRange.WHOLE_DAY.duration()) return availableTimeRangesForRequest;
 
     //For-each that iterates through sortedTimeRanges to determine available times for request's duration.
-    for (TimeRange timeRange : sortedTimeRanges) {
-        if (timeRange.start() == dayStart) start = timeRange.end();
-
+    for (TimeRange timeRange : sortedEventTimeRanges) {
+        if (timeRange.start() == dayStart) startEvent = timeRange.end();
         //If the gap between the current start and the next event start is greater than request's duration
         //create a TimeRange for that period.
-        if (timeRange.start() - start >= request.getDuration()) {
-            possibleTimeRanges.add(TimeRange.fromStartEnd(start, timeRange.start(), false));
+        if (timeRange.start() - startEvent >= request.getDuration()) {
+            availableTimeRangesForRequest.add(TimeRange.fromStartEnd(startEvent, timeRange.start(), false));
         }
-
-        start = timeRange.end();
-        end = timeRange.end();
-
+        startEvent = timeRange.end();
+        endEvent = timeRange.end();
+      
         //Checks to see if the TimeRanges are nested.
-        if (previousTime.contains(timeRange)) {
-            end = previousTime.end();
+        if (previousEventTimeRange.contains(timeRange)) {
+            endEvent = previousEventTimeRange.end();
         }
-
+      
         //If the current TimeRange is the last in the list then determine if there is space for the request after.
-        if (sortedTimeRanges.get(sortedTimeRanges.size() - 1) == timeRange) {
-            if (dayEnd - end >= request.getDuration()) {
-                possibleTimeRanges.add(TimeRange.fromStartEnd(end, dayEnd, true));
+        if (sortedEventTimeRanges.get(sortedEventTimeRanges.size() - 1) == timeRange) {
+            if (dayEnd - endEvent >= request.getDuration()) {
+                availableTimeRangesForRequest.add(TimeRange.fromStartEnd(endEvent, dayEnd, true));
             }
         }
-
-        previousTime = timeRange;
+        previousEventTimeRange = timeRange;
     }
-
+    
     //If there are no events planned, create a TimeRange of the entire day available for the meeting request.
-    if (sortedTimeRanges.isEmpty()) possibleTimeRanges.add(TimeRange.fromStartDuration(dayStart, dayEnd + 1));
-    return possibleTimeRanges;
+    if (sortedEventTimeRanges.isEmpty()) availableTimeRangesForRequest
+      .add(TimeRange.fromStartDuration(dayStart, dayEnd + 1));
+    return availableTimeRangesForRequest;
   }
 
   /**
@@ -79,8 +81,8 @@ public final class FindMeetingQuery {
   public static List<TimeRange> getAllAttendeeRanges(Collection<Event> events, MeetingRequest request) {
     Set<TimeRange> allAttendeeRanges = new HashSet<>();
 
-    //Iterates through events to retrieve all event attendees and reference them with meeting request's attendees inorder to
-    //retrieve their TimeRanges.
+    //Iterates through events to retrieve all event attendees and 
+    //reference them with meeting request's attendees inorder to retrieve their TimeRanges.
     for (Event event : events) {
         Set<String> eventAttendees = event.getAttendees();
         for (String requestAttendee : request.getAttendees()) {
@@ -91,7 +93,6 @@ public final class FindMeetingQuery {
             }
         }
     }
-
     //Convert Set to ArrayList using Stream and sorts it using Collections.sort by ascending time.
     List<TimeRange> sortedTimeRanges = allAttendeeRanges.stream().collect(Collectors.toList()); 
     Collections.sort(sortedTimeRanges, TimeRange.ORDER_BY_START); 
